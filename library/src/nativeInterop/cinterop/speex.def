@@ -1,0 +1,4 @@
+headers = speex/speex.h
+headerFilter = speex/*
+staticLibraries = libspeex.a
+noStringConversion = speex_bits_read_from
