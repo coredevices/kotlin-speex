@@ -3,20 +3,17 @@
 #include <speex/speex.h>
 //#include <speex/speex_preprocess.h>
 
-static jfieldID speexDecBits;
-static jfieldID speexDecState;
-
 extern "C"
 JNIEXPORT jint
 
 JNICALL
 Java_coredevices_speex_SpeexCodec_decode(JNIEnv *env, jobject thiz,
-        jbyteArray encoded_frame, jobject out_frame, jboolean has_header_byte) {
+        jbyteArray encoded_frame, jobject out_frame, jlong speexDecBits, jlong speexDecState, jboolean has_header_byte) {
     jbyte *encoded_frame_data = env->GetByteArrayElements(encoded_frame, nullptr);
     jsize encoded_frame_length = env->GetArrayLength(encoded_frame);
     auto *out_frame_data = reinterpret_cast<spx_int16_t *>(env->GetDirectBufferAddress(out_frame));
-    auto *bits = reinterpret_cast<SpeexBits *>(env->GetLongField(thiz, speexDecBits));
-    auto *dec_state = reinterpret_cast<void *>(env->GetLongField(thiz, speexDecState));
+    auto *bits = reinterpret_cast<SpeexBits *>(speexDecBits);
+    auto *dec_state = reinterpret_cast<void *>(speexDecState);
     int offset = has_header_byte ? 1 : 0;
     speex_bits_read_from(bits, reinterpret_cast<char *>(encoded_frame_data) + offset, encoded_frame_length - offset);
     int result = speex_decode_int(dec_state, bits, out_frame_data);
@@ -64,14 +61,4 @@ Java_coredevices_speex_SpeexCodec_destroyDecState(
 ) {
     auto *state = reinterpret_cast<void *>(dec_state);
     speex_decoder_destroy(state);
-}
-extern "C"
-JNIEXPORT void JNICALL
-Java_coredevices_speex_SpeexCodec_initNative(
-    JNIEnv *env,
-    jobject thiz
-) {
-    jclass clazz = env->GetObjectClass(thiz);
-    speexDecBits = env->GetFieldID(clazz, "speexDecBits", "J");
-    speexDecState = env->GetFieldID(clazz, "speexDecState", "J");
 }

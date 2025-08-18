@@ -7,16 +7,6 @@ actual class SpeexCodec actual constructor(
     private val bitRate: Int,
     private val frameSize: Int
 ): AutoCloseable {
-    private val gain = 1.0f
-    enum class Preprocessor(val flagValue: Int) {
-        DENOISE(1),
-        AGC(2),
-        VAD(4)
-    }
-
-    init {
-        initNative()
-    }
     private val speexDecBits: Long = initSpeexBits()
     private val speexDecState: Long = initDecState(sampleRate, bitRate)
 
@@ -28,7 +18,7 @@ actual class SpeexCodec actual constructor(
      */
     actual fun decodeFrame(encodedFrame: ByteArray, decodedFrame: ByteArray, hasHeaderByte: Boolean): SpeexDecodeResult {
         val decodedFrameBuf = ByteBuffer.allocateDirect(decodedFrame.size)
-        val result = SpeexDecodeResult.fromInt(decode(encodedFrame, decodedFrameBuf, hasHeaderByte))
+        val result = SpeexDecodeResult.fromInt(decode(encodedFrame, decodedFrameBuf, this.speexDecBits, this.speexDecState, hasHeaderByte))
         if (result == SpeexDecodeResult.Success) {
             decodedFrameBuf.get(decodedFrame, 0, decodedFrame.size)
         }
@@ -39,9 +29,7 @@ actual class SpeexCodec actual constructor(
         destroySpeexBits(speexDecBits)
         destroyDecState(speexDecState)
     }
-
-    private external fun initNative()
-    private external fun decode(encodedFrame: ByteArray, decodedFrame: ByteBuffer, hasHeaderByte: Boolean): Int
+    private external fun decode(encodedFrame: ByteArray, decodedFrame: ByteBuffer, speexDecBits: Long, speexDecState: Long, hasHeaderByte: Boolean): Int
     private external fun initSpeexBits(): Long
     private external fun initDecState(sampleRate: Long, bitRate: Int): Long
     private external fun destroySpeexBits(speexBits: Long)
