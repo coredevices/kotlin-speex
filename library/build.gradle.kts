@@ -45,12 +45,13 @@ kotlin {
         }
     }
     macosArm64 {
+        val root = project.rootDir
         compilations.getByName("main") {
             cinterops {
                 val speex by creating {
-                    extraOpts("-libraryPath", "${rootDir}/speex/lib/macos")
-                    compilerOpts.add("-I${rootDir}/speex/include")
-                    compilerOpts.add("-I${rootDir}/speex/source/include")
+                    extraOpts("-libraryPath", "${root}/speex/lib/macos")
+                    compilerOpts.add("-I${root}/speex/include")
+                    compilerOpts.add("-I${root}/speex/source/include")
                 }
             }
         }
@@ -60,12 +61,13 @@ kotlin {
         iosArm64(),
         iosSimulatorArm64()
     ).forEach {
+        val root = project.rootDir
         it.compilations.getByName("main") {
             cinterops {
                 val speex by creating {
-                    extraOpts("-libraryPath", "${rootDir}/speex/lib/ios")
-                    compilerOpts.add("-I${rootDir}/speex/include")
-                    compilerOpts.add("-I${rootDir}/speex/source/include")
+                    extraOpts("-libraryPath", "${root}/speex/lib/ios")
+                    compilerOpts.add("-I${root}/speex/include")
+                    compilerOpts.add("-I${root}/speex/source/include")
                 }
             }
         }
