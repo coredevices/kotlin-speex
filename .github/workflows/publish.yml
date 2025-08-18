@@ -1,0 +1,32 @@
+on: push
+name: Publish to GitHub Packages
+jobs:
+  publish:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Set up Xcode
+        run: |
+          ls /Applications/Xcode*
+          sudo xcode-select --switch /Applications/Xcode_16.1.app/Contents/Developer
+
+      - name: Build Apple Library
+        run: |
+          cd speex
+          ./build-ios.sh
+
+      - name: Publish
+        run: |
+          ./gradlew publish
+        env:
+          GITHUB_ACTOR: ${{ secrets.PRV_REPO_USER }}
+          GITHUB_TOKEN: ${{ secrets.PRV_REPO_PAT }}
