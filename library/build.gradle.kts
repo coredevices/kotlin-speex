@@ -90,6 +90,7 @@ kotlin {
 
 android {
     namespace = "coredevices.speex"
+    ndkVersion = "28.1.13356709"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
