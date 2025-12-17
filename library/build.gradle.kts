@@ -11,7 +11,7 @@ val headSha by lazy {
         commandLine("git", "describe", "--always", "--dirty")
     }.standardOutput.asText.get().trim()
 }
-group = "coredevices.speex"
+group = "io.github.coredevices.speex"
 version = headSha
 
 publishing {
@@ -89,7 +89,7 @@ kotlin {
 }
 
 android {
-    namespace = "coredevices.speex"
+    namespace = "io.github.coredevices.speex"
     ndkVersion = "28.1.13356709"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
@@ -102,5 +102,32 @@ android {
 }
 
 mavenPublishing {
+
+    publishToMavenCentral()
+    signAllPublications()
     coordinates(group.toString(), "speex", version.toString())
+
+    pom {
+        name = "Kotlin Speex"
+        description = "kotlin-speex"
+        inceptionYear = "2025"
+        url = "https://github.com/coredevices/kotlin-speex"
+        licenses {
+            license {
+                name = "The Apache Software License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "repo"
+            }
+        }
+        developers {
+            developer {
+                id = "CoreDevices"
+                name = "Core Devices"
+                url = "http://repebble.com"
+            }
+        }
+        scm {
+            url = "https://github.com/coredevices/kotlin-speex"
+        }
+    }
 }
