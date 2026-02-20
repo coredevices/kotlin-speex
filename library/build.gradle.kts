@@ -56,16 +56,27 @@ kotlin {
             }
         }
     }
+    iosArm64 {
+        val root = project.rootDir
+        compilations.getByName("main") {
+            cinterops {
+                val speex by creating {
+                    extraOpts("-libraryPath", "${root}/speex/lib/ios-device")
+                    compilerOpts.add("-I${root}/speex/include")
+                    compilerOpts.add("-I${root}/speex/source/include")
+                }
+            }
+        }
+    }
     listOf(
         iosX64(),
-        iosArm64(),
         iosSimulatorArm64()
     ).forEach {
         val root = project.rootDir
         it.compilations.getByName("main") {
             cinterops {
                 val speex by creating {
-                    extraOpts("-libraryPath", "${root}/speex/lib/ios")
+                    extraOpts("-libraryPath", "${root}/speex/lib/ios-simulator")
                     compilerOpts.add("-I${root}/speex/include")
                     compilerOpts.add("-I${root}/speex/source/include")
                 }
