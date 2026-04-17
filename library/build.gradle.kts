@@ -103,7 +103,7 @@ android {
 
 mavenPublishing {
 
-    publishToMavenCentral()
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
     coordinates(group.toString(), "speex", version.toString())
 
